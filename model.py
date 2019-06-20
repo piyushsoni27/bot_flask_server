@@ -1,74 +1,37 @@
-import pandas as pd
-import numpy as np
-import os
-import re
-from datetime import datetime
+import tensorflow as tf 
+import numpy as np 
 
-#personName = input('Enter your full name: ')
-#linkedInData = input('Do you have LinkedIn data to parse through (y/n)?')
-personName = "Piyush Soni"
-linkedInData = "y"
-
-def getLinkedInData():
-	df = pd.read_csv('/media/piyush/New Volume/Projects/FB_chatbot/data/linkedin/messages.csv')
-	dateTimeConverter = lambda x: datetime.strptime(x.replace("T", ' '),'%Y-%m-%d %H:%M:%S')
-	responseDictionary = dict()
-	peopleContacted = df['FROM'].unique().tolist()
-	
-    for person in peopleContacted:
-        receivedMessages = df[df['FROM'] == person]
-		sentMessages = df[df['TO'] == person]
-		if (len(sentMessages) == 0 or len(receivedMessages) == 0):
-		# There was no actual conversation
+def getTestInput(inputMessage, wList, maxLen):
+	encoderMessage = np.full((maxLen), wList.index('<pad>'), dtype='int32')
+	inputSplit = inputMessage.lower().split()
+	for index,word in enumerate(inputSplit):
+		try:
+			encoderMessage[index] = wList.index(word)
+		except ValueError:
 			continue
-		combined = pd.concat([sentMessages, receivedMessages])
-		combined['DATE'] = combined['DATE'].apply(dateTimeConverter)
-		combined = combined.sort_values(['DATE'])
-		otherPersonsMessage, myMessage = "",""
-		firstMessage = True
-		for index, row in combined.iterrows():
-			if (row['FROM'] != personName):
-				if myMessage and otherPersonsMessage:
-					otherPersonsMessage = cleanMessage(otherPersonsMessage)
-					myMessage = cleanMessage(myMessage)
-					responseDictionary[otherPersonsMessage.rstrip()] = myMessage.rstrip()
-					otherPersonsMessage, myMessage = "",""
-				otherPersonsMessage = otherPersonsMessage + row['CONTENT'] + " "
-			else:
-				if (firstMessage):
-					firstMessage = False
-					# Don't include if I am the person initiating the convo
-					continue
-				myMessage = myMessage + str(row['CONTENT']) + " "
-	return responseDictionary
+	encoderMessage[index + 1] = wList.index('<EOS>')
+	encoderMessage = encoderMessage[::-1]
+	encoderMessageList=[]
+	for num in encoderMessage:
+		encoderMessageList.append([num])
+	return encoderMessageList
 
-def cleanMessage(message):
-	# Remove new lines within message
-	cleanedMessage = message.replace('\n',' ').lower()
-	# Deal with some weird tokens
-	cleanedMessage = cleanedMessage.replace("\xc2\xa0", "")
-	# Remove punctuation
-	cleanedMessage = re.sub('([.,!?])','', cleanedMessage)
-	# Remove multiple spaces in message
-	cleanedMessage = re.sub(' +',' ', cleanedMessage)
-	return cleanedMessage
-
-combinedDictionary = {}
-
-if (linkedInData == 'y'):
-	print('Getting LinkedIn Data')
-	combinedDictionary.update(getLinkedInData())
-
-print('Total len of dictionary', len(combinedDictionary))
-
-print('Saving conversation data dictionary')
-np.save('conversationDictionary.npy', combinedDictionary)
-
-conversationFile = open('conversationData.txt', 'w')
-
-for key,value in combinedDictionary.items():
-    if (not key.strip() or not value.strip()):
-        continue    # If there are empty strings
-        
-    conversationFile.write(key.strip() + value.strip())
-
+def idsToSentence(ids, wList):
+    EOStokenIndex = wList.index('<EOS>')
+    padTokenIndex = wList.index('<pad>')
+    myStr = ""
+    listOfResponses=[]
+    for num in ids:
+        if (num[0] == EOStokenIndex or num[0] == padTokenIndex):
+            listOfResponses.append(myStr)
+            myStr = ""
+        else:
+            myStr = myStr + wList[num[0]] + " "
+    if myStr:
+        listOfResponses.append(myStr)
+    listOfResponses = [i for i in listOfResponses if i]
+    listOfResponses = list(set(listOfResponses))
+    #chosenString = ''.join(listOfResponses)
+    chosenString = listOfResponses[0]
+    #chosenString = max(listOfResponses, key=len)
+    return chosenString
