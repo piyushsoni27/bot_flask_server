@@ -42,12 +42,14 @@ saver.restore(sess, tf.train.latest_checkpoint('models'))
 zeroVector = np.zeros((1), dtype='int32')
 
 def pred(inputString):
+    print(inputString)
     inputVector = model.getTestInput(inputString, wordList, maxEncoderLength)
     feedDict = {encoderInputs[t]: inputVector[t] for t in range(maxEncoderLength)}
     feedDict.update({decoderLabels[t]: zeroVector for t in range(maxDecoderLength)})
     feedDict.update({decoderInputs[t]: zeroVector for t in range(maxDecoderLength)})
     feedDict.update({feedPrevious: True})
     ids = (sess.run(decoderPrediction, feed_dict=feedDict))
+    print(ids)
     return model.idsToSentence(ids, wordList)
 
 # webapp
