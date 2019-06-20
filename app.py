@@ -58,11 +58,13 @@ app = Flask(__name__, template_folder='./')
 
 @app.route('/prediction', methods=['POST', 'GET'])
 def prediction():
+    print("prediction")
     response =  pred(str(request.json['message']))
     return jsonify(response)
 
 @app.route('/')
 def main():
+    print("main")
     return render_template('index.html')
 
 
