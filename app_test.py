@@ -31,8 +31,9 @@ def predict(input_string):
 def prediction():
     if request.method == "POST":
         input_string = str(request.form.get('message'))
-        print("prediction: {}/n".format(input_string))
+        print("Input: {}\n".format(input_string))
         prediction = str(pred(input_string))
+        print("prediction: {}\n".format(prediction))
         return jsonify(prediction)
     else:
         return render_template('index.html')
