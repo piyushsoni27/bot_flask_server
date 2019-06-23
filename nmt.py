@@ -113,6 +113,22 @@ def myModel(Xoh, Yoh, m, Tx, Ty, n_a, n_s, human_vocab_size, machine_vocab_size,
     
     return model, model_history
 
+def pred(input_string):
+    s0 = np.zeros((params['m'], params['n_s']))
+    c0 = np.zeros((params['m'], params['n_s']))
+    
+    source = nmt_utils.string_to_int(input_string, params['Tx'], vocab['human_vocab'])
+    source = np.array(list(map(lambda x: to_categorical(x, num_classes=params['human_vocab_size']), source)))
+    source = source.reshape((1, source.shape[0], source.shape[1]))
+    prediction = model.predict([source, s0, c0])
+    prediction = np.argmax(prediction, axis = -1)
+    output = [vocab['inv_machine_vocab'][int(i)] for i in prediction]
+    output = ''.join(output)
+    
+    return output
+    
+    
+
 def run_examples(model, params, vocab):
     """
     Run through predefined examples to check model perofrmance.
@@ -120,21 +136,15 @@ def run_examples(model, params, vocab):
     
     print("Running examples...\n")
     
-    s0 = np.zeros((params['m'], params['n_s']))
-    c0 = np.zeros((params['m'], params['n_s']))
+    
     
     EXAMPLES = ['3 May 1979', '5 April 09', '21th of August 2016', 'Tue 10 Jul 2007', 'Saturday May 9 2018', 'March 3 2001', 'March 3rd 2001', '1 March 2001']
     for example in EXAMPLES:
         
-        source = nmt_utils.string_to_int(example, params['Tx'], vocab['human_vocab'])
-        source = np.array(list(map(lambda x: to_categorical(x, num_classes=params['human_vocab_size']), source)))
-        source = source.reshape((1, source.shape[0], source.shape[1]))
-        prediction = model.predict([source, s0, c0])
-        prediction = np.argmax(prediction, axis = -1)
-        output = [vocab['inv_machine_vocab'][int(i)] for i in prediction]
+        prediction = pred(example)
         
         print("source:", example)
-        print("output:", ''.join(output))
+        print("output:", prediction)
         
     return
 
@@ -146,7 +156,7 @@ def main(save = True, save_dir = os.getcwd(), load_model=None):
     
     return: trained/ loaded model, parameters of models, vocbulary
     """
-    
+    global model, params, vocab
     params1 = {'m' : 1000, 
               'n_a' : 32,
               'n_s' : 64,
@@ -180,6 +190,8 @@ def main(save = True, save_dir = os.getcwd(), load_model=None):
     densor2 = Dense(1, activation = "relu")
     activator = Activation(nmt_utils.softmax, name='attention_weights') # We are using a custom softmax(axis = 1) loaded from nmt_utils_utils
     dotor = Dot(axes = 1)
+    
+    
     
     if save:
         model, _ = myModel(Xoh, Yoh, **params, **hparams)
