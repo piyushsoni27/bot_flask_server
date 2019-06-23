@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import pickle
 import tensorflow as tf
@@ -59,7 +61,7 @@ app = Flask(__name__, template_folder='./')
 @app.route('/prediction', methods=['POST', 'GET'])
 def prediction():
     print("prediction")
-    response =  pred(str(request.json['message']))
+    response =  pred(str(request.form.get['message']))
     return jsonify(response)
 
 @app.route('/')
