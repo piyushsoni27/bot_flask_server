@@ -138,7 +138,7 @@ def run_examples(model, params, vocab):
     
     
     
-    EXAMPLES = ['3 May 1979', '5 April 09', '21th of August 2016', 'Tue 10 Jul 2007', 'Saturday May 9 2018', 'March 3 2001', 'March 3rd 2001', '1 March 2001']
+    EXAMPLES = ['greg', '3 May 1979', '5 April 09', '21th of August 2016', 'Tue 10 Jul 2007', 'Saturday May 9 2018', 'March 3 2001', 'March 3rd 2001', '1 March 2001']
     for example in EXAMPLES:
         
         prediction = pred(example)
