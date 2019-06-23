@@ -5,7 +5,7 @@ from tqdm import tqdm
 from babel.dates import format_date
 from keras.utils import to_categorical
 import keras.backend as K
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 fake = Faker()
 fake.seed(12345)
@@ -179,12 +179,12 @@ def softmax(x, axis=1):
     else:
         raise ValueError('Cannot apply softmax to a tensor that is 1D')
         
-
+"""
 def plot_attention_map(model, input_vocabulary, inv_output_vocabulary, text, n_s = 128, num = 6, Tx = 30, Ty = 10):
-    """
+    "
     Plot the attention map.
   
-    """
+    ""
     attention_map = np.zeros((10, 30))
     Ty, Tx = attention_map.shape
     
@@ -249,3 +249,4 @@ def plot_attention_map(model, input_vocabulary, inv_output_vocabulary, text, n_s
     #f.show()
     
     return attention_map
+"""
