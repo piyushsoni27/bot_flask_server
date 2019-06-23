@@ -44,7 +44,7 @@ def prediction():
     if request.method == "POST":
         input_string = str(request.form.get('message'))
         print("Input: {}\n".format(input_string))
-        prediction = str(pred(input_string))
+        prediction = pred(input_string)
         print("prediction: {}\n".format(prediction))
         return jsonify(prediction)
     else:
