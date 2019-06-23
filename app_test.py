@@ -30,14 +30,12 @@ def predict(input_string):
 
 @app.route('/prediction_in/<input_str>', methods=['GET', 'POST'])
 def prediction_in(input_str):
-    if request.method == "POST":
-        input_string = str(input_str)
-        print("Input: {}\n".format(input_string))
-        prediction = str(pred(input_string))
-        print("prediction: {}\n".format(prediction))
-        return jsonify(prediction)
-    else:
-        return render_template('index.html')
+    print("method : {}".format(request.method))
+    input_string = str(input_str)
+    print("Input: {}\n".format(input_string))
+    prediction = str(pred(input_string))
+    print("prediction: {}\n".format(prediction))
+    return jsonify(prediction)
 
 
 @app.route('/prediction', methods=['GET', 'POST'])
