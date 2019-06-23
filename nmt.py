@@ -211,7 +211,12 @@ def main(save = True, save_dir = os.getcwd(), load_model=None):
     return model, params, vocab
 
 if __name__ == '__main__':
+    """
+    I/P strings with k q will throw error.
+    """
+    
     print("main")
+    
     model_dir = os.path.join(os.getcwd(), "models")
     load_model = os.path.join(model_dir, 'coursera_model.h5')
     
