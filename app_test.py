@@ -40,9 +40,9 @@ def prediction_in(input_str):
 
 @app.route('/prediction', methods=['GET', 'POST'])
 def prediction():
-    print(request.data)
+    #print(request.get_json(force=True))
     if request.method == "POST":
-        input_string = str(request.args.get('message'))
+        input_string = str(request.form.get('message'))
         print("Input: {}\n".format(input_string))
         prediction = str(pred(input_string))
         print("prediction: {}\n".format(prediction))
