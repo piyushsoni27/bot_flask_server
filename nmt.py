@@ -205,8 +205,8 @@ def main(save = True, save_dir = os.getcwd(), load_model=None):
         else:
             model = create_model(**params)
             print("loading pretrained weights...")
-            model.load_weights('models/coursera_model.h5')
-            print("weights loaded!!")
+            model.load_weights('models/date_model_epoch15.h5')
+            print("date_model_epoch15.h5 weights loaded!!")
         
     return model, params, vocab
 
