@@ -50,7 +50,7 @@ fbprophet==0.2.1
 filelock==2.0.12
 Flask==1.0.2
 Flask-API==1.1
-Flask-Cors==3.0.3
+Flask-Cors==3.0.9
 gast==0.2.2
 gevent==1.2.2
 glob2==0.5
